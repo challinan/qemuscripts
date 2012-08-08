@@ -1,0 +1,35 @@
+#!/bin/sh
+
+QEMU_DIR=${HOME}/qemu
+
+KERNEL_IMAGE=$QEMU_DIR/images/zImage-qemuarm.bin
+ROOTFS_IMAGE=$QEMU_DIR/images/devel-image-qemuarm.ext3
+
+if [ ! -z $1 ]; then
+    if [ "$1" == "--use-build-images" ]; then
+        KERNEL_IMAGE=/scratch/working/mel5/build_qemuarm_release/deploy/images/zImage-qemuarm.bin
+        ROOTFS_IMAGE=/scratch/working/mel5/build_qemuarm_release/deploy/images/devel-image-qemuarm.ext3
+    else
+	echo "Invalid command line parameter $1"
+	exit
+    fi
+fi
+
+echo "KERNEL_IMAGE = $KERNEL_IMAGE"
+echo "ROOTFS_IMAGE = $ROOTFS_IMAGE"
+
+# Check for tap0 already configured
+TAPC=`ifconfig | grep tap`
+if [ -z $TAPC ]; then 
+	sudo tunctl -b -g 1000
+	sudo ifconfig tap0 192.168.7.1
+fi
+
+export PATH=/home/bitnami/qemu/bin:$PATH
+NETWORK_CONFIG="ip=192.168.7.2::192.168.7.1:255.255.255.0"
+NETWORK_CONFIG=""
+
+qemu-system-arm -kernel $KERNEL_IMAGE -net nic,vlan=0 -net tap,vlan=0,ifname=tap0,script=no,downscript=no -M versatilepb -hda $ROOTFS_IMAGE -show-cursor -no-reboot -usb -usbdevice wacom-tablet -serial stdio -m 128 -append "root=/dev/sda rw console=ttyAMA0,115200 console=tty $NETWORK_CONFIG mem=128M highres=off  console=ttyS0"
+
+sudo tunctl -d tap0
+
