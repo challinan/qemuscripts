@@ -3,11 +3,21 @@ runqemu qemuarm /scratch/working/mel5/build_qemuarm_release/deploy/images/devel-
 
 /scratch/working/mel5/build_qemuarm_release/sysroots/x86_64-linux/usr/bin/qemu-system-arm -kernel /scratch/working/mel5/build_qemuarm_release/deploy/images/zImage-qemuarm.bin -net nic,vlan=0 -net tap,vlan=0,ifname=tap0,script=no,downscript=no -M versatilepb -hda /scratch/working/mel5/build_qemuarm_release/deploy/images/devel-image-qemuarm.ext3 -no-reboot -show-cursor -usb -usbdevice wacom-tablet -no-reboot -serial stdio -m 128 --append root=/dev/sda rw console=ttyAMA0,115200 console=tty ip=192.168.7.2::192.168.7.1:255.255.255.0 mem=128M highres=off  console=ttyS0
 
-# ----------- This works ---------
+# ----------- This works on U10.04 bitnami EC2 image ---------
+# Make changes as appropriate for your environment
 
-compile qemu: (qemu-1.0.1)
-./configure --prefix=/home/bitnami/qemu --disable-strip  --target-list=arm-linux-user,arm-softmmu,i386-linux-user,i386-softmmu,mips-linux-user,mips-softmmu,mipsel-linux-user,mipsel-softmmu,ppc-linux-user,ppc-softmmu,x86_64-linux-user,x86_64-softmmu --disable-werror --disable-vnc-tls --audio-drv-list=oss,alsa --audio-card-list=ac97,es1370 --disable-sdl --enable-kvm
+$ wget http://wiki.qemu.org/download/qemu-1.0.1.tar.gz
+$ tar xf qemu-1.0.1.tar.gz
+$ rm qemu-1.0.1.tar.gz
+$ cd qemu-1.0.1/
+$ 
 
+$ compile qemu: (qemu-1.0.1)
+$ ./configure --prefix=/home/bitnami/qemu --disable-strip  --target-list=arm-linux-user,arm-softmmu,i386-linux-user,i386-softmmu,mips-linux-user,mips-softmmu,mipsel-linux-user,mipsel-softmmu,ppc-linux-user,ppc-softmmu,x86_64-linux-user,x86_64-softmmu --disable-werror --disable-vnc-tls --audio-drv-list=oss,alsa --audio-card-list=ac97,es1370 --disable-sdl --enable-kvm
+$ make
+$ make install
+
+# Now run it
 $ sudo tunctl -b -g 1000
 $ ifconfig tap0 192.168.7.2
 $ export PATH=/home/bitnami/qemu/bin:$PATH
