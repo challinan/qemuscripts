@@ -12,7 +12,7 @@ $ rm qemu-1.0.1.tar.gz
 $ cd qemu-1.0.1/
 $ 
 
-$ compile qemu: (qemu-1.0.1)
+$ # compile qemu: (qemu-1.0.1)
 $ ./configure --prefix=/home/bitnami/qemu --disable-strip  --target-list=arm-linux-user,arm-softmmu,i386-linux-user,i386-softmmu,mips-linux-user,mips-softmmu,mipsel-linux-user,mipsel-softmmu,ppc-linux-user,ppc-softmmu,x86_64-linux-user,x86_64-softmmu --disable-werror --disable-vnc-tls --audio-drv-list=oss,alsa --audio-card-list=ac97,es1370 --disable-sdl --enable-kvm
 $ make
 $ make install
