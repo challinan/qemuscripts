@@ -9,6 +9,9 @@ if [ ! -z $1 ]; then
     if [ "$1" == "--use-build-images" ]; then
         KERNEL_IMAGE=/scratch/working/mel5/build_qemuarm_release/deploy/images/zImage-qemuarm.bin
         ROOTFS_IMAGE=/scratch/working/mel5/build_qemuarm_release/deploy/images/devel-image-qemuarm.ext3
+    elif [ "$1" == "--use-mel6-images" ]; then
+        	KERNEL_IMAGE=/scratch/working/mel6/build_qemuarm_release/tmp/deploy/images/zImage-qemuarm.bin
+        	ROOTFS_IMAGE=/scratch/working/mel6/build_qemuarm_release/tmp/deploy/images/core-image-base-qemuarm.ext3
     else
 	echo "Invalid command line parameter $1"
 	exit
@@ -21,12 +24,12 @@ echo "ROOTFS_IMAGE = $ROOTFS_IMAGE"
 # Check for tap0 already configured
 USERID=`whoami`
 TAPC=`ifconfig | grep tap`
-if [ -z $TAPC ]; then 
+if [ -z "$TAPC" ]; then 
 	sudo tunctl -b -u $USERID
 	sudo ifconfig tap0 192.168.7.1
 fi
 
-export PATH=/home/bitnami/qemu/bin:$PATH
+export PATH=${HOME}/qemu/bin:$PATH
 NETWORK_CONFIG="ip=192.168.7.2::192.168.7.1:255.255.255.0"
 NETWORK_CONFIG=""
 
