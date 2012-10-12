@@ -19,9 +19,10 @@ echo "KERNEL_IMAGE = $KERNEL_IMAGE"
 echo "ROOTFS_IMAGE = $ROOTFS_IMAGE"
 
 # Check for tap0 already configured
+USERID=`whoami`
 TAPC=`ifconfig | grep tap`
 if [ -z $TAPC ]; then 
-	sudo tunctl -b -g 1000
+	sudo tunctl -b -u $USERID
 	sudo ifconfig tap0 192.168.7.1
 fi
 
